@@ -1,0 +1,63 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<div class="mb-3 mt-2"><a href="/" style="text-decoration: none;">Trang chủ</a> / <a href="/cart/" style="text-decoration: none;">Giỏ hàng</a> / Thanh toán</div>
+<h2 style="text-align: center;">Thông Tin Đơn Hàng</h2>
+
+<div class="d-flex justify-content-center mb-4">
+  <div class="rounded border p-2" style="width: 70vw;">
+    {% for product in cart_products%}
+    <div class="mb-3">
+      <h5 class="card-title mb-2">{{ product.title }}</h5>
+      <div class="d-flex gap-4">
+        <span class="card-text">Giá: {% if product.sale_price %}{{ product.sale_price }}{% else %}{{ product.price }}{% endif %}₫</span>
+        {% for key, value in quantities.items %}
+        {% if key == product.id|slugify %}
+          <span class="input-group d-flex gap-3" style='align-items: center; width: 170px;'>
+            Số lượng: {{ value }}
+          </span>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<h4 style="text-align: center;">Tổng giá: {{ totals }}₫</h4>
+<br>
+<hr>
+<br>
+<h2 style="text-align: center;">Thông Tin Vận Chuyển</h2>
+<div class="d-flex justify-content-center mb-4"> 
+  <div class="rounded border p-2" style="width: 70vw;">
+    <p>Họ Tên: {{ shipping_info.shipping_full_name }}</p>
+    <p>Số Điện Thoại: {{ shipping_info.shipping_phone }}</p>
+    <p>Địa Chỉ: {{ shipping_info.shipping_address }}</p>
+    <p>Thành Phố: {{ shipping_info.shipping_city }}</p>
+    <p>Tỉnh: {{ shipping_info.shipping_state }}</p>
+    <p>Phương Thức Thanh Toán: {% if shipping_info.shipping_payment_type == 'card' %} Thanh Toán Chuyển Khoản Ngân Hàng {% else %} Thanh Toán Khi Nhận Hàng {% endif %}</p>
+    {% if shipping_info.shipping_payment_type == 'card' %}
+    <p card-number>Số Thẻ: {{ shipping_info.shipping_card_number }}</p>
+    <p>Ngân Hàng: {{ shipping_info.shipping_bank }}</p>
+    {% endif %}
+  </div> 
+</div>
+<div class="d-flex justify-content-center mb-5">
+  <div class="d-flex gap-4">
+    <a href="/payment/checkout/" class="btn btn-danger">Chỉnh Sửa Thông Tin</a>
+    <div>
+      <form form-cash action="/payment/process-order/" method="POST">
+        {% csrf_token %}
+      </form>
+      <button button-buy class="btn btn-dark">Xác Nhận Mua Hàng</button>
+    </div>
+  </div>
+</div>
+
+{% include 'partials/payment.html' %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/payment.css' %}">
+<script src="{% static 'js/payment.js' %}"></script>
+{% endblock %}

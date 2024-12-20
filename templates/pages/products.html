@@ -1,0 +1,28 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<div class="mb-2 mt-2"><a href="/" style="text-decoration: none;">Trang chủ</a> / Tất cả sản phẩm</div>
+{% include 'partials/filter.html' %}
+<h2 style="text-align: center;">Tất cả sản phẩm</h2>
+<div class="container text-center">
+  <div class="row justify-content-center">
+    {% for product in page_obj %}
+    <div class="card col-2 m-2" style="padding-left: 0 !important; padding-right: 0 !important;">
+      <img src="{{ product.img1 }}" class="card-img-top" alt="Ảnh sản phẩm" style="aspect-ratio: 208/181; overflow: hidden; object-fit: cover;">
+      <div class="card-body">
+        <div class="card-title">
+          <a href="/products/{{ product.slug }}/" style="text-decoration: none;">{{ product.title|upper }}</a>
+        </div>
+        {% if product.sale_price %}
+        <strike class="text-secondary" style="font-size: 14px;">{{product.price}}₫</strike>
+        <span>{{ product.sale_price }}₫</span>
+        {% else %}
+        <span>{{ product.price }}₫</span>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% include 'partials/pagination.html' %}
+{% endblock %}

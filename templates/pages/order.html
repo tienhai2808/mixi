@@ -1,0 +1,111 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<div class="container">
+  <div class="row">
+    <center>
+      <div class="col-8">
+        <h2>{{ title }}</h2>
+        <table class="table table-borderless">
+          <tbody>
+            <tr>
+              <th scope="row">Mã đơn hàng</th>
+              <td>{{ order.id }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Thời gian đặt hàng</th>
+              <td>{{ order.date_ordered|date:"H:i, d/m/Y" }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Thời gian nhận hàng</th>
+              <td>{{ order.date_shipped|date:"H:i, d/m/Y" }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Họ tên người nhận</th>
+              <td>{{ order.full_name }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Sđt người nhận</th>
+              <td>{{ order.phone }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Địa chỉ giao hàng</th>
+              <td>{{ order.shipping_address }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Phương thức thanh toán</th>
+              <td>{{ order.payment_method }}</td>
+            </tr>
+            {% if order.card_number %}
+            <tr>
+              <th scope="row">Stk chuyển khoản</th>
+              <td>{{ order.card_number }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Ngân hàng chuyển khoản</th>
+              <td>{{ order.bank }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+              <th scope="row">Trạng thái</th>
+              <td><strong>{{ order.status }}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+        <h4 class="text-center">Chi tiết đơn hàng</h4>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Sản phẩm</th>
+              <th scope="col">Số lượng</th>
+              <th scope="col">Giá</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for detail in order.orderitem_set.all %}
+            <tr>
+              <td>
+                <a href="/products/{{ detail.product.slug }}/">
+                  {{ detail.product.title }}
+                </a>
+              </td>
+              <td>{{ detail.quantity }}</td>
+              <td>{{ detail.price }}₫</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div>
+        {% if role == 'Khách hàng' and order.status == 'Chờ lấy hàng' %}
+        <button class="btn btn-danger btn-cancel">
+          Hủy đơn hàng
+        </button>
+        {% elif role == 'Khách hàng' and order.status == 'Đang giao' %}
+        <button data-role="customer" class="btn btn-dark btn-shipped">
+          Đã nhận hàng
+        </button>
+        {% endif %}
+        {% if role == 'Quản lý' and order.status == 'Đang giao' %}
+        <button data-role="admin" class="btn btn-dark btn-shipped">
+          Đã giao hàng
+        </button>
+        {% elif role == 'Quản lý' and order.status == 'Chờ lấy hàng' %}
+        <button class="btn btn-dark btn-shipping">
+          Đang giao hàng
+        </button>
+        {% endif %}
+        <form method="post" class="form-action">
+          {% csrf_token %}
+          <input type="text" hidden name="action">
+        </form>
+      </div>
+      <br>
+    </center>
+  </div>
+</div>
+
+{% load static %}
+<script src="{% static 'js/order.js' %}"></script>
+{% endblock %}

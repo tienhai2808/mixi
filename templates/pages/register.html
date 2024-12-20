@@ -1,0 +1,17 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<h1 class="mb-3" style="text-align: center;">Đăng Ký</h1>
+<div class="container d-flex justify-content-center mb-3">
+  <form method="post" style="width: 40vw;">
+    {% csrf_token %}
+    {{ form_su.as_p }}
+    <center>
+      <button class="btn btn-dark" type="submit">Đăng Ký</button>
+    </center>
+  </form>
+</div>
+
+{% load static %}
+<script src="{% static 'js/sign_in_up.js' %}"></script>
+{% endblock %}

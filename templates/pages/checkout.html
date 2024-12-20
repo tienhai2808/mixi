@@ -1,0 +1,74 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<div class="mb-3 mt-2"><a href="/" style="text-decoration: none;">Trang chủ</a> / <a href="/cart/" style="text-decoration: none;">Giỏ hàng</a> / Thanh toán</div>
+<h2 style="text-align: center;">Thông Tin Vận Chuyển</h2>
+<div class="d-flex justify-content-center">
+  <form action="/payment/billing-info/" method="POST" style="width: 50vw;">
+    {% csrf_token %}
+    <p>
+      <label for="">Họ tên:</label>
+      {{ shipping_form.shipping_full_name }}
+    </p>
+    <p>
+      <label for="">Số điện thoại:</label>
+      {{ shipping_form.shipping_phone }}
+    </p>
+    <p>
+      <label for="">Địa chỉ:</label>
+      {{ shipping_form.shipping_address }}
+    </p>
+    <p>
+      <label for="">Thành phố: </label>
+      {{ shipping_form.shipping_city }}
+    </p>
+    <p>
+      <label for="">Tỉnh: </label>
+      {{ shipping_form.shipping_state }}
+    </p>
+    <p>
+      <label for="">Phương Thức Thanh Toán: </label>
+      {{ shipping_form.shipping_payment_type }}
+    </p>
+    <div id="card-info" class="d-none">
+      <p>
+        <label for="">Số tài khoản:</label>
+        {{ shipping_form.shipping_card_number }}
+      </p>
+      <p>
+        <label for="">Ngân hàng:</label>
+        {{ shipping_form.shipping_bank }}
+      </p>
+    </div>
+    <center>
+      <button type="submit" class="btn btn-dark">Xác nhận thông tin</button>
+    </center>
+  </form>
+</div>
+<hr>
+<h4 style="text-align: center;">Tổng giá: {{ totals }}₫</h4>
+<br><br>
+{% for product in cart_products%}
+<div class="d-flex justify-content-center mb-4">
+  <div class="d-flex rounded border p-2 gap-3" style="width: 70vw;">
+    <div>
+      <img src="{{ product.img1 }}" height="120px" alt="Ảnh sản phẩm">
+    </div>
+    <div class="">
+      <h5 class="card-title mb-2">{{ product.title }}</h5>
+      <p class="card-text">Giá: {% if product.sale_price %}{{ product.sale_price }}{% else %}{{ product.price }}{% endif %}₫</p>
+      {% for key, value in quantities.items %}
+      {% if key == product.id|slugify %}
+        <div class="input-group mb-1 d-flex gap-3" style='align-items: center; width: 170px;'>
+          Số lượng: {{ value }}
+        </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% load static %}
+<script src="{% static 'js/checkout.js' %}"></script>
+{% endblock %}

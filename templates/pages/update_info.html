@@ -1,0 +1,42 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<h2 style="text-align: center; margin-top: 20px;">Chỉnh Sửa Thông Tin</h2>
+<hr>
+<form method="POST">
+  {% csrf_token %}
+  <div class="d-flex justify-content-center">
+    <div style="width: 40vw;">
+      <h5 style="text-align: center;">Thông Tin Khách Hàng</h5>
+      {{ form.as_p }}
+      <br>
+      <h5 style="text-align: center;">Thông Tin Đặt Hàng</h5>
+      <p>
+        <label for="">Họ tên</label>
+        {{ shipping_form.shipping_full_name }}
+      </p>
+      <p>
+        <label for="">Số điện thoại</label>
+        {{ shipping_form.shipping_phone }}
+      </p>
+      <p>
+        <label for="">Địa chỉ</label>
+        {{ shipping_form.shipping_address }}
+      </p>
+      <p>
+        <label for="">Thành phố</label>
+        {{ shipping_form.shipping_city }}
+      </p>
+      <p>
+        <label for="">Tỉnh</label>
+        {{ shipping_form.shipping_state }}
+      </p>
+      <center>
+        <button type="submit" class="btn btn-dark">Lưu Thay Đổi</button>
+      </center>
+    </div>
+  </div>
+</form>
+<br><br><br>
+
+{% endblock %}

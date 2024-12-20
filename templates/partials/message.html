@@ -1,0 +1,8 @@
+{% for message in messages %}
+<div class="container d-flex" style="position: fixed; justify-content: flex-end;">
+  <div mess-div class="alert alert-dark" role="alert" style="text-align: center;">
+    {{message}}
+    <i x-icon class="fa-regular fa-circle-xmark text-danger" style="cursor: pointer;"></i>
+  </div>
+</div>
+{% endfor %}

@@ -1,0 +1,20 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<h1 class="mb-3" style="text-align: center;">Đăng Nhập</h1>
+<div class="container d-flex justify-content-center mb-3">
+  <form method="post" style="width: 40vw;">
+    {% csrf_token %}
+    {{ form_si.as_p }}
+    <center>
+      <p>Chưa có tài khoản vui lòng <a style="text-decoration: none;" href="/register/">Đăng ký</a></p>
+    </center>
+    <center>
+      <button class="btn btn-dark" type="submit">Đăng Nhập</button>
+    </center>
+  </form>
+</div>
+
+{% load static %}
+<script src="{% static 'js/sign_in_up.js' %}"></script>
+{% endblock %}

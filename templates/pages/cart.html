@@ -1,0 +1,103 @@
+{% extends 'layouts/base.html' %}
+
+{% block main %}
+<div class="mb-3 mt-2"><a href="/" style="text-decoration: none;">Trang chủ</a> / Giỏ hàng</div>
+<h2 style="text-align: center;">Giỏ hàng</h2>
+  {% if cart_products %}
+  <div class="d-flex justify-content-center gap-3 mb-3" style="align-items: center;">
+    <h4 style="text-align: center;">Tổng giá: {{ totals }}₫</h4>
+    <a class="btn btn-dark" href="/payment/checkout/">Thanh Toán</a>
+  </div>
+  <div note-update class="d-none">
+    <p style="font-family: 'Montserrat', sans-serif; font-size: 13px; color: red;">Vui lòng ấn cập nhật để áp dụng thay đổi</p>
+  </div>
+    {% for product in cart_products%}
+    <div class="d-flex justify-content-center mb-4">
+      <div class="d-flex rounded border p-2 gap-3" style="width: 70vw; justify-content: space-between;">
+        <div>
+          <img src="{{ product.img1 }}" height="120px" alt="Ảnh sản phẩm">
+        </div>
+        <div class="">
+          <h5 class="card-title mb-2">{{ product.title }}</h5>
+          <p class="card-text">Giá: {% if product.sale_price %}{{ product.sale_price }}{% else %}{{ product.price }}{% endif %}₫</p>
+          {% for key, value in quantities.items %}
+          {% if key == product.id|slugify %}
+            <div class="input-group mb-1 d-flex gap-3" style='align-items: center; width: 170px;'>
+              Số lượng:<input type="number" check="{{ value }}" class="form-control" id="qty_{{product.id}}" value="{{ value }}" min="1" >
+            </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+        <div class="d-flex gap-2" style="align-items: center;">
+          <button type="button" class="btn btn-dark update-cart" value="{{product.id}}"  data-index="{{product.id}}"><i class="fa-solid fa-check"></i></button>
+          <button type="button" class="btn btn-danger delete-product" value="{{product.id}}"  data-index="{{product.id}}"><i class="fa-solid fa-x"></i></button>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    
+
+    <script>
+      $(document).on('click', '.update-cart', function(e){
+        e.preventDefault();
+        var productid = $(this).data('index')
+        $.ajax({
+          type:'POST',
+          url:"{% url 'cart-update' %}",
+          data: {
+            product_id: $(this).data('index'),
+            product_qty: $('#qty_' + productid).val(),
+            csrfmiddlewaretoken: '{{csrf_token}}',
+            action:'post'
+          },
+          success: function(json){
+            location.reload()
+          },
+          error: function(xhr, errmsg, err){
+
+          }
+        })
+      })
+
+      $(document).on('click', '.delete-product', function(e){
+        e.preventDefault();
+        $.ajax({
+          type:'POST',
+          url:"{% url 'cart-delete' %}",
+          data: {
+            product_id: $(this).data('index'),
+            csrfmiddlewaretoken: '{{csrf_token}}',
+            action:'post'
+          },
+          success: function(json){
+            location.reload()
+          },
+          error: function(xhr, errmsg, err){
+            
+          }
+        })
+      })
+
+      const changQuantity = document.querySelectorAll('input[type="number"]')
+      const noteUpdate = document.querySelector('[note-update]')
+      changQuantity.forEach((input) => {
+        input.addEventListener('change', () => {
+          console.log(input.getAttribute('check'))
+          if (input.value !== input.getAttribute('check')) {
+            noteUpdate.classList.remove('d-none')
+          }
+        })
+      })
+    </script>
+  {% else %}
+  <h5 style="text-align: center; margin-bottom: 20px;">Bạn chưa có sản phẩm trong giỏ hàng</h5>
+  <center>
+    <a class="btn btn-dark" href="/collections/all/">Mua sắm</a>
+  </center>
+  <br><br><br><br>
+  {% endif %}
+{% endblock %}
+
+
+

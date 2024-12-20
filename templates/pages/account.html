@@ -1,0 +1,20 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<h1 class="mb-3" style="text-align: center;">Xin chào {{ title }}</h1>
+
+<div class="d-flex justify-content-center gap-4 mb-5">
+  <a class="btn btn-dark" href="/update-info/">Chỉnh sửa thông tin</a>
+  <a class="btn btn-dark" href="/payment/orders/">
+    {% if request.user.is_superuser %}
+    Tất cả đơn hàng
+    {% else %}
+    Đơn hàng của bạn
+    {% endif %}
+  </a>
+  <a class="btn btn-dark" href="/logout/">Đăng xuất</a>
+</div>
+
+{% load static %}
+<script src="{% static 'js/account.js' %}"></script>
+{% endblock %}

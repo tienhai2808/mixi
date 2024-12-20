@@ -1,0 +1,63 @@
+{% load static %}
+
+<nav class="navbar bg-dark navbar-expand-lg bg-body-tertiary border-bottom border-body" data-bs-theme="dark"> 
+  <div class="container-fluid container">
+    <a class="navbar-brand" href="/">
+      <img src="{% static 'images/logo.webp' %}" height="40px" alt="Logo">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse gap-3" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            SẢN PHẨM
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/collections/all/">TẤT CẢ</a></li>
+            <li><a class="dropdown-item" href="/collections/nhan-phong-thuy/">NHẪN</a></li>
+            <li><a class="dropdown-item" href="/collections/vong-tay-da-phong-thuy/">VÒNG TAY</a></li>
+            <li><a class="dropdown-item" href="/collections/mat-day/">MẶT DÂY</a></li>
+            <li><a class="dropdown-item" href="/collections/vang-phong-thuy/">VÀNG</a></li>
+            <li><a class="dropdown-item" href="/collections/vat-pham-phong-thuy/">PHONG THỦY</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            PHONG THỦY
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/collections/menh-kim/">MỆNH KIM</a></li>
+            <li><a class="dropdown-item" href="/collections/menh-hoa/">MỆNH HỎA</a></li>
+            <li><a class="dropdown-item" href="/collections/menh-thuy/">MỆNH THỦY</a></li>
+            <li><a class="dropdown-item" href="/collections/menh-tho/">MỆNH THỔ</a></li>
+            <li><a class="dropdown-item" href="/collections/menh-moc/">MỆNH MỘC</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active text-light" aria-current="page" href="/collections/bo-suu-tap-moi/">BỘ SƯU TẬP MỚI</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav me-0 mb-2 mb-lg-0">
+        <li class="nav-item">
+          {% if request.user.is_authenticated %}
+          <a class="nav-link active text-light" aria-current="page" href="/account/" title="{{ request.user.username }}"><i class="fa-solid fa-user" style="font-size: 18px;"></i></a>
+          {% else %}
+          <a class="nav-link active text-light" aria-current="page" href="/login/" title="Đăng nhập"><i class="fa-solid fa-user" style="font-size: 18px;"></i></a>
+          {% endif %}
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active text-light" aria-current="page" href="/cart/">
+            <i class="fa-solid fa-cart-shopping" style="font-size: 18px;"></i>
+            <span id="cart-quantity">{{cart | length}}</span>
+          </a>
+        </li>
+      </ul>
+      <form class="d-flex" action="/search/" role="search">
+        <input class="form-control me-2" name="q" type="search" value="{{ q }}" placeholder="Tìm kiếm sản phẩm" aria-label="Search">
+        <button class="btn btn-outline-light" type="submit">Tìm </button>
+      </form>
+    </div>
+  </div>
+</nav>

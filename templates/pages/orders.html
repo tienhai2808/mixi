@@ -1,0 +1,80 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block main %}
+<link rel="stylesheet" href="{% static 'css/orders.css' %}">
+<div class="container">
+  <div class="row">
+    <center>
+      <div class="col-10">
+        <h2>{{ title }}</h2>
+        <div class="d-flex justify-content-end my-3">
+          <form class="form-status">
+            <select name="status" class="form-select">
+              <option {% if status == 'Tất cả' or not status %} selected {% endif %}>Tất cả</option>
+              <option {% if status == 'Chờ lấy hàng' %} selected {% endif %}>Chờ lấy hàng</option>
+              <option {% if status == 'Đã hủy' %} selected {% endif %}>Đã hủy</option>
+              <option {% if status == 'Đang giao' %} selected {% endif %}>Đang giao</option>
+              <option {% if status == 'Đã giao' %} selected {% endif %}>Đã giao</option>
+            </select>
+          </form>
+        </div>
+        <table class="table table-striped table-bordered table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Đơn hàng</th>
+              {% if request.user.is_superuser %}
+              <th scope="col">Khách hàng</th>
+              {% endif %}
+              <th scope="col">Thời gian đặt</th>
+              <th scope="col">Thời gian nhận</th>
+              <th scope="col">Tổng đơn</th>
+              <th scope="col">Trạng thái</th>
+              <th scope="col">Xác nhận</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+              <tr>
+                <td>
+                  <a href="/payment/orders/{{order.id}}/">
+                    Chi tiết
+                  </a>
+                </td>
+                {% if request.user.is_superuser %}
+                <td>{{ order.full_name }}</td>
+                {% endif %}
+                <td>{{ order.date_ordered|date:"H:i, d/m/Y" }}</td>
+                <td>{{ order.date_shipped|date:"H:i, d/m/Y" }}</td>
+                <td>{{ order.amount_paid }}₫</td>
+                <td>{{ order.status }}</td>
+                <td>
+                {% if order.status == 'Chờ lấy hàng' %}
+                  {% if role == 'Khách hàng'%}
+                  <span value="{{ order.id }}" class="badge text-bg-danger btn-cancel">Hủy đơn hàng</span>
+                  {% else %}
+                  <span value="{{ order.id }}" class="badge text-bg-dark btn-shipping">Đang giao hàng</span>
+                  {% endif %}
+                {% elif order.status == 'Đang giao' %}
+                  {% if role == 'Khách hàng' %}
+                  <span value="{{ order.id }}" data-role="customer" class="badge text-bg-dark btn-shipped">Đã nhận hàng</span>
+                  {% else %}
+                  <span value="{{ order.id }}" data-role="admin" class="badge text-bg-dark btn-shipped">Đã giao hàng</span>
+                  {% endif %}
+                {% endif %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <br>
+        <form method="post" class="form-action">
+          {% csrf_token %}
+          <input type="text" hidden name="id_order" id="id_order">
+          <input type="text" hidden name="action" id="action">
+        </form>
+      </div>
+    </center>
+  </div>
+</div>
+<script src="{% static 'js/orders.js' %}"></script>
+{% endblock %}
